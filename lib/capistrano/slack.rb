@@ -8,12 +8,8 @@ module Capistrano
   module Slack
 
       def payload(announcement)
-      {
-        'channel' => fetch(:slack_room),
-        'username' => fetch(:slack_username, ''),
-        'text' => announcement,
-        'icon_emoji' => fetch(:slack_emoji, ''),
-        'parse' => fetch(:slack_parse, '')
+        {
+          'text' => announcement,
         }.to_json
       end
 
@@ -37,10 +33,10 @@ module Capistrano
 
       def slack_defaults
         if fetch(:slack_deploy_defaults, true) == true
-          before 'deploy', 'slack:starting'
-          before 'deploy:migrations', 'slack:starting'
+          after 'deploy:finalize_update', 'slack:starting'
+          #before 'deploy:migrations', 'slack:starting'
           after 'deploy', 'slack:finished'
-          after 'deploy:migrations', 'slack:finished'
+          #after 'deploy:migrations', 'slack:finished'
         end
       end
 
